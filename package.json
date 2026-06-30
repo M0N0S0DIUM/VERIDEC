@@ -3,13 +3,16 @@
   "version": "0.1.0",
   "description": "CI/CD Pre-Flight Check & Impact Predictor for AI-generated code",
   "main": "src/index.js",
+  "bin": {
+    "veridec": "src/cli.js"
+  },
   "scripts": {
     "start": "node src/index.js",
-    "dev": "node --watch src=index.js",
+    "dev": "node --watch src/cli.js",
     "mcp": "node src/mcp.js",
     "cli": "node src/cli.js",
     "client": "node src/mcp-client.js",
-    "test": "node test/mcp-test.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
     "ci/cd",
@@ -24,7 +27,10 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
+    "@fastify/cors": "^8.5.0",
     "@typescript-eslint/parser": "^8.62.1",
+    "eslint-scope": "^8.4.0",
+    "estraverse": "^5.3.0",
     "fastify": "^5.9.0",
     "prettier": "^3.9.4"
   },
