@@ -1,0 +1,43 @@
+{
+  "name": "veridec",
+  "version": "0.1.0",
+  "description": "CI/CD Pre-Flight Check & Impact Predictor for AI-generated code",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src=index.js",
+    "mcp": "node src/mcp.js",
+    "cli": "node src/cli.js",
+    "client": "node src/mcp-client.js",
+    "test": "node test/mcp-test.js"
+  },
+  "keywords": [
+    "ci/cd",
+    "pre-flight",
+    "ai-code",
+    "analysis",
+    "impact-prediction"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@typescript-eslint/parser": "^8.62.1",
+    "fastify": "^5.9.0",
+    "prettier": "^3.9.4"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/M0N0S0DIUM/VERIDEC.git"
+  },
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/M0N0S0DIUM/VERIDEC/issues"
+  },
+  "homepage": "https://github.com/M0N0S0DIUM/VERIDEC#readme"
+}

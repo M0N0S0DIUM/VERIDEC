@@ -1,0 +1,24 @@
+{
+  "name": "veridec",
+  "version": "0.1.0",
+  "description": "CI/CD Pre-Flight Check & Impact Predictor for AI-generated code",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src=index.js",
+    "mcp": "node src/mcp.js"
+  },
+  "keywords": [
+    "ci/cd",
+    "pre-flight",
+    "ai-code",
+    "analysis",
+    "impact-prediction"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {}
+}
