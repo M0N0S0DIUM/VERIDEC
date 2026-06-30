@@ -10,6 +10,7 @@
 - **Performance Assessment**: Identify performance anti-patterns
 - **Impact Scoring**: Calculate an impact score (0-100) to assess risk level
 - **Multiple Output Formats**: Console reports and JSON for integration with CI/CD systems
+- **Visual Dashboard**: Interactive web interface for code analysis
 
 ## Installation
 
