@@ -12,7 +12,7 @@
     "mcp": "node src/mcp.js",
     "cli": "node src/cli.js",
     "client": "node src/mcp-client.js",
-    "dashboard": "echo 'Open index.html in your browser' && start index.html 2>/dev/null || open index.html",
+    "dashboard": "echo 'Open index.html in your browser'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
