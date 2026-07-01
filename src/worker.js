@@ -1,6 +1,6 @@
 // VERIDEC Worker - Serves dashboard and proxies to MCP server
 
-import { analyzeCode } from './analyzer.js';
+import { analyzeCode } from './workers-friendly-analyzer.js';
 
 const MCP_SERVER_URL = 'http://localhost:3000'; // Change this to your actual MCP server URL
 

@@ -7,8 +7,3 @@ compatibility_date = "2024-01-01"
 # Environment variables (set these in Cloudflare dashboard)
 [vars]
 MCP_SERVER_URL = "http://localhost:3000"  # Change to your MCP server URL
-
-# Rules for handling different file types
-[[rules]]
-type = "ESModule"
-globs = ["**/*.js"]
