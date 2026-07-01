@@ -1,6 +1,5 @@
 {
-  "account_id": "",
-  "project_type": "javascript",
-  "workers_dev": true,
+  "project_name": "veridec",
+  "worker_name": "veridec",
   "compatibility_date": "2024-01-01"
 }
