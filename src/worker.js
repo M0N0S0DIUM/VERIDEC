@@ -484,7 +484,7 @@ function example() {
                 displayResults(result);
                 
             } catch (error) {
-                showError(`Analysis error: ${error.message}. Make sure the VERIDEC server is running at ${API_BASE_URL}`);
+                showError("Analysis error: " + error.message + ". Make sure the VERIDEC server is running at " + API_BASE_URL);
                 loadingSpinner.style.display = 'none';
                 analyzeBtn.disabled = false;
             }
