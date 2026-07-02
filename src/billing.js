@@ -306,7 +306,14 @@ async function verifyStripeSignature(payload, header, secret) {
 
   const timestamp = parts.t;
   const signature = parts.v1;
-  if (!timestamp || !signature) return false;
+  
+  // Check if timestamp is within acceptable window (5 minutes)
+  if (!timestamp) return false;
+  const now = Math.floor(Date.now() / 1000);
+  const timestampInt = parseInt(timestamp, 10);
+  if (Math.abs(now - timestampInt) > 300) return false; // 5 minute window
+  
+  if (!signature) return false;
 
   const signedPayload = `${timestamp}.${payload}`;
   const key = await crypto.subtle.importKey(
@@ -319,7 +326,13 @@ async function verifyStripeSignature(payload, header, secret) {
   const expected = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(signedPayload));
   const expectedHex = Array.from(new Uint8Array(expected), (b) => b.toString(16).padStart(2, '0')).join('');
 
-  return timingSafeEqual(expectedHex, signature);
+  // Use timing-safe comparison
+  if (expectedHex.length !== signature.length) return false;
+  let result = 0;
+  for (let i = 0; i < expectedHex.length; i++) {
+    result |= expectedHex.charCodeAt(i) ^ signature.charCodeAt(i);
+  }
+  return result === 0;
 }
 
 function timingSafeEqual(a, b) {

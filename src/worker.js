@@ -22,63 +22,94 @@ const jsonHeaders = {
   'Access-Control-Allow-Origin': '*',
 };
 
+// Security headers
+const securityHeaders = {
+  'Content-Security-Policy': "default-src 'self' https:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:;",
+  'X-Content-Type-Options': 'nosniff',
+  'X-Frame-Options': 'DENY',
+  'Referrer-Policy': 'strict-origin-when-cross-origin',
+  'Permissions-Policy': 'geolocation=(), microphone=()',
+};
+
+// Add security headers to responses
+function addSecurityHeaders(response) {
+  const headers = new Headers(response.headers);
+  for (const [key, value] of Object.entries(securityHeaders)) {
+    headers.set(key, value);
+  }
+  return new Response(response.body, { status: response.status, headers });
+}
+
+// Code size limit (50KB)
+const MAX_CODE_SIZE = 50000;
+
 function htmlResponse(html) {
-  return new Response(html, {
+  return addSecurityHeaders(new Response(html, {
     headers: {
       'Content-Type': 'text/html; charset=utf-8',
       'Access-Control-Allow-Origin': '*',
     },
-  });
+  }));
 }
 
 const healthEndpoint = async () => {
-  return new Response(JSON.stringify({ status: 'healthy' }), { headers: jsonHeaders });
+  return addSecurityHeaders(new Response(JSON.stringify({ status: 'healthy' }), { headers: jsonHeaders }));
 };
 
 const analyzeEndpoint = async (request, env) => {
   const db = env.veridec_billing;
   const auth = await authenticateRequest(db, request);
   if (!auth.ok) {
-    return new Response(JSON.stringify({ error: auth.error }), {
+    return addSecurityHeaders(new Response(JSON.stringify({ error: auth.error }), {
       status: auth.status,
       headers: jsonHeaders,
-    });
+    }));
   }
 
   const limit = await enforceUsageLimit(db, auth);
   if (!limit.ok) {
-    return new Response(JSON.stringify({
+    return addSecurityHeaders(new Response(JSON.stringify({
       error: limit.error,
       upgradeUrl: limit.upgradeUrl || '/pricing',
     }), {
       status: limit.status,
       headers: jsonHeaders,
-    });
+    }));
   }
 
   try {
     const body = await request.json();
     if (!body.code) {
-      return new Response(JSON.stringify({ error: 'No code provided in request body' }), {
+      return addSecurityHeaders(new Response(JSON.stringify({ error: 'No code provided in request body' }), {
         status: 400,
         headers: jsonHeaders,
-      });
+      }));
+    }
+
+    // Code size validation to prevent resource exhaustion
+    if (body.code.length > MAX_CODE_SIZE) {
+      return addSecurityHeaders(new Response(JSON.stringify({ 
+        error: `Code too large. Maximum size is ${MAX_CODE_SIZE} bytes.` 
+      }), {
+        status: 413,
+        headers: jsonHeaders,
+      }));
     }
 
     const result = await analyzeCode(body.code, body.filePath || 'worker-analyzed-file.js');
     await trackUsage(db, auth, '/analyze');
 
-    return new Response(JSON.stringify({
+    return addSecurityHeaders(new Response(JSON.stringify({
       ...result,
       usage: auth.user ? {
         plan: auth.user.plan,
       } : { plan: 'free' },
-    }), { headers: jsonHeaders });
+    }), { headers: jsonHeaders }));
   } catch (error) {
-    return new Response(JSON.stringify({ error: 'Analysis failed', message: error.message }), {
+    return addSecurityHeaders(new Response(JSON.stringify({ error: 'Analysis failed', message: error.message }), {
       status: 500,
       headers: jsonHeaders,
-    });
+    }));
   }
 };
 
