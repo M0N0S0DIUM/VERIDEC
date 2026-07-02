@@ -14,9 +14,6 @@ class VeridecMCPClient {
     this.baseUrl = `http://${host}:${port}`;
   }
 
-  /**
-   * Send a request to the MCP server
-   */
   async _request(path, method = 'GET', data = null) {
     const options = {
       hostname: this.host,
@@ -60,9 +57,6 @@ class VeridecMCPClient {
     });
   }
 
-  /**
-   * Check server health
-   */
   async healthCheck() {
     try {
       const result = await this._request('/health');
@@ -75,9 +69,6 @@ class VeridecMCPClient {
     }
   }
 
-  /**
-   * Analyze a single file
-   */
   async analyzeFile(code, filePath = 'unnamed-file') {
     const data = {
       code,
@@ -96,9 +87,6 @@ class VeridecMCPClient {
     }
   }
 
-  /**
-   * Analyze multiple files in batch
-   */
   async analyzeFiles(files) {
     const data = {
       files: files.map((file, index) => ({
@@ -111,7 +99,7 @@ class VeridecMCPClient {
       const result = await this._request('/analyze/batch', 'POST', data);
       return result;
     } catch (error) {
-      return files.map((_, index) => ({
+      return files.map((file, index) => ({
         filePath: file.filePath || `unnamed-file-${index}`,
         error: error.message,
         issues: [],
@@ -120,10 +108,7 @@ class VeridecMCPClient {
     }
   }
 
-  /**
-   * Get impact assessment for analysis results
-   */
- async getImpactAssessment(results) {
+  async getImpactAssessment(results) {
     const data = {
       results
     };
@@ -140,19 +125,14 @@ class VeridecMCPClient {
     }
   }
 
-  /**
-   * Check if server is running
-   */
   async isServerRunning() {
     const health = await this.healthCheck();
     return health.healthy === true || health.status === 'healthy';
   }
 }
 
-// Export for use as module
 module.exports = VeridecMCPClient;
 
-// CLI interface
 if (require.main === module) {
   const args = process.argv.slice(2);
   const client = new VeridecMCPClient();
@@ -228,7 +208,6 @@ if (require.main === module) {
         const fs = require('fs');
         const path = require('path');
         
-        // Get all JS/TS files in directory
         const files = fs.readdirSync(dirPath).filter(file => 
           file.endsWith('.js') || file.endsWith('.ts') ||
           file.endsWith('.jsx') || file.endsWith('.tsx')

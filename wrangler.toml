@@ -4,6 +4,16 @@ name = "veridec"
 main = "src/worker.js"
 compatibility_date = "2024-01-01"
 
-# Environment variables (set these in Cloudflare dashboard)
 [vars]
-MCP_SERVER_URL = "http://localhost:3000"  # Change to your MCP server URL
+APP_URL = "https://veridecai.com"
+
+[[rules]]
+type = "Text"
+globs = ["**/*.html"]
+fallthrough = true
+
+[[d1_databases]]
+binding = "veridec_billing"
+database_name = "veridec-billing"
+database_id = "8a01c4ee-c2fa-4405-b81d-55b91e8bea71"
+migrations_dir = "migrations"

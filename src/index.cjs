@@ -7,9 +7,9 @@
  */
 
 // Re-export main components for convenience
-const cli = require('./cli');
-const analyzer = require('./analyzer');
-const reporter = require('./reporter');
+const cli = require('./cli.cjs');
+const analyzer = require('./analyzer.cjs');
+const reporter = require('./reporter.cjs');
 
 /**
  * VERIDEC version

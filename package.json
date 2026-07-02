@@ -7,13 +7,15 @@
     "veridec": "src/cli.cjs"
   },
   "scripts": {
-    "start": "node src/index.js",
-    "dev": "node --watch src/cli.js",
-    "mcp": "node src/mcp.js",
-    "cli": "node src/cli.js",
-    "client": "node src/mcp-client.js",
-    "dashboard": "echo 'Open index.html in your browser'",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/index.cjs",
+    "dev": "node --watch src/cli.cjs",
+    "mcp": "node src/mcp.cjs",
+    "cli": "node src/cli.cjs",
+    "client": "node src/mcp-client.cjs",
+    "worker:dev": "npx wrangler dev",
+    "test:analyzer": "node test-worker-analyzer.mjs",
+    "dashboard": "echo 'Open index.html in your browser or run npm run worker:dev'",
+    "test": "node test-worker-analyzer.mjs"
   },
   "keywords": [
     "ci/cd",

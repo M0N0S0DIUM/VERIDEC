@@ -810,6 +810,7 @@ function example() {
         <!-- Footer -->
         <footer>
             <p>VERIDEC v1.0.0 | Analyzes AI-generated code for CI/CD pre-flight checks</p>
+            <p style="margin-top:10px;"><a href="/pricing" style="color:white;">Pricing</a> · <a href="/account" style="color:white;">Account</a></p>
             <span class="version">Pro Edition</span>
         </footer>
     </div>
@@ -820,9 +821,19 @@ function example() {
     </div>
 
     <script>
-        // Configuration
-        const API_BASE_URL = 'http://localhost:3000';
-        
+        // Use same-origin API when served over HTTP; fall back to local MCP when opened as a file
+        const API_BASE_URL = (window.location.protocol === 'http:' || window.location.protocol === 'https:')
+            ? ''
+            : 'http://localhost:3000';
+        const storedApiKey = localStorage.getItem('veridec_api_key');
+
+        function getAnalyzeHeaders() {
+            const headers = { 'Content-Type': 'application/json' };
+            if (storedApiKey) {
+                headers['Authorization'] = `Bearer ${storedApiKey}`;
+            }
+            return headers;
+        }
         // DOM Elements
         const analyzeBtn = document.getElementById('analyzeBtn');
         const clearBtn = document.getElementById('clearBtn');
@@ -885,9 +896,7 @@ function example() {
             try {
                 const response = await fetch(`${API_BASE_URL}/analyze`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: getAnalyzeHeaders(),
                     body: JSON.stringify({
                         code: code,
                         filePath: 'user-code.js'
@@ -895,7 +904,11 @@ function example() {
                 });
 
                 if (!response.ok) {
-                    throw new Error(`Analysis failed with status ${response.status}`);
+                    const errData = await response.json().catch(() => ({}));
+                    if (response.status === 429) {
+                        throw new Error(errData.error || 'Scan limit reached. Upgrade at /pricing');
+                    }
+                    throw new Error(errData.error || `Analysis failed with status ${response.status}`);
                 }
 
                 const result = await response.json();
@@ -907,7 +920,7 @@ function example() {
                 displayResults(result);
                 
             } catch (error) {
-                showError(`Analysis error: ${error.message}. Make sure the VERIDEC server is running at ${API_BASE_URL}`);
+                showError(`Analysis error: ${error.message}`);
                 loadingSpinner.style.display = 'none';
                 analyzeBtn.disabled = false;
             }

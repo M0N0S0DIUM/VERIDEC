@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const Fastify = require('fastify');
-const { analyzeCode } = require('./analyzer');
+const { analyzeCode } = require('./analyzer.cjs');
 
 /**
  * MCP (Model Control Protocol) Server for VERIDEC
@@ -49,7 +49,6 @@ async function startServer(port = 3000) {
         return;
       }
 
-      // Analyze each file
       const results = await Promise.all(files.map(async (file, index) => {
         try {
           const result = await analyzeCode(file.code, file.filePath || `unnamed-file-${index}`);
@@ -84,7 +83,6 @@ async function startServer(port = 3000) {
         return;
       }
 
-      // Calculate impact assessment
       let maxScore = 0;
       let totalIssues = 0;
       let highSeverityCount = 0;
@@ -128,7 +126,6 @@ async function startServer(port = 3000) {
     }
   });
 
-  // Start the server
   try {
     await fastify.listen({ port, host: '127.0.0.1' });
     console.log(`VERIDEC MCP Server listening on http://localhost:${port}`);
@@ -138,10 +135,8 @@ async function startServer(port = 3000) {
   }
 }
 
-// Export for use as module
 module.exports = { startServer };
 
-// Start server if run directly
 if (require.main === module) {
   const port = process.env.MCP_PORT || 3000;
   startServer(parseInt(port, 10));

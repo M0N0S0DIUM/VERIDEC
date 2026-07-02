@@ -15,17 +15,7 @@ if not exist "wrangler.toml" (
 )
 echo [OK] wrangler.toml found
 
-echo.
-echo Step 2: Checking MCP server URL configuration...
-findstr /i "localhost" wrangler.toml >nul
-if %errorlevel% equ 0 (
-    echo [WARNING] MCP_SERVER_URL is set to localhost - ensure this is correct for your environment
-) else (
-    echo [OK] MCP_SERVER_URL appears to be configured
-)
-
-echo.
-echo Step 3: Deploying to Cloudflare Workers...
+echo Step 2: Deploying to Cloudflare Workers...
 wrangler deploy --compatibility-date=2024-01-01
 
 if %errorlevel% equ 0 (
